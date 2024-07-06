@@ -1,0 +1,29 @@
+image: Ubuntu2204  # образ для сборки
+
+stack: node 20  # окружение
+
+branches:
+  only:
+    - master  # ветка git
+    - main
+
+cache: node_modules  # кеширование
+
+install:
+  - npm install -g yarn
+  - yarn  # команда установки зависимостей
+
+build: off  # отключаем встроенную в appveyor систему сборки
+
+build_script:
+  - yarn build   # команда сборки
+
+test_script:
+  - yarn test  # скрипт тестирования
+
+deploy_script:  # скрипт развёртывания
+  - git config --global user.name "appveyor-bot"
+  - git config --global user.email "ci@appveyor.com"
+  - echo "machine github.com login appveyor-bot password $GITHUB_TOKEN" > ~/.netrc
+  - npx gh-pages -d dist -r "https://$GITHUB_TOKEN@github.com/MaxHugoboss/ahj-homeworks-testing.git"
+
